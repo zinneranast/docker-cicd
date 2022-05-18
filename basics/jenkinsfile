@@ -5,17 +5,17 @@ node {
      sh "git rev-parse --short HEAD > .git/commit-id"
      commit_id = readFile('.git/commit-id').trim()
    }
-   stage('dockerbuild') {
-     dir('basics') {
-       def app = docker.build("zinneranast/docker-nodejs-demo:${commit_id}", '.')
+   parallel {
+     stage('dockerbuild') {
+       dir('basics') {
+         def app = docker.build("zinneranast/docker-nodejs-demo:${commit_id}", '.')
+       }
      }
-     /*echo "docker build step"*/
-   }
-   stage('sonarqube tests') {
-     dir('basics') {
-       def app = docker.build("zinneranast/sonar:${commit_id}", '-f soanrbuild' , '.')
+     stage('sonarqube tests') {
+       dir('basics') {
+         def app = docker.build("zinneranast/sonar:${commit_id}", '-f soanrbuild' , '.')
+       }
      }
-     /*echo "sonarqube test step"*/
    }
    stage('docker build/push') {
      dir('basics') {
