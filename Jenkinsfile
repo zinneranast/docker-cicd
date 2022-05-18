@@ -10,8 +10,6 @@ node {
    }
    stage('sonarqube tests') {
       def app = docker.build("zinneranast/sonar:${commit_id}", '-f soanrbuild' , '.')
-     }
-     mysql.stop()
    }
    stage('docker build/push') {
      docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
